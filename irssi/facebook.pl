@@ -1,28 +1,42 @@
-#!/usr/bin/perl -w
-
 #
-# Facebook.pl (1.00)
-#
-# Description:
-# This is a simple perl script that
-# tries to collect functions for using
-# Facebook without Graph API.
-#
-# History:
-# See ChangeLog.
-#
-# License:
-# Public Domain.
-#
-# sud0 <sud0@unitedhack.com>
-# http://sud0.unitedhack.com
-# http://github.com/mafiasud0
+# Usage:
+#	/FBLOGIN
+#	/FBWALL [message]
+# Settings:
+#	/SET facebook_autologin [on/off]
+#	/SET facebook_user [email or username]
+#	/SET facebook_pass [password]
+# Notes:
+#	"<br>", "\n", and "%0A" are line breaks
 #
 
 use strict;
 use IO::Socket;
 use Encode;
+use vars qw($VERSION %IRSSI);
 
+use Irssi;
+$VERSION = "1.00";
+%IRSSI = (
+	authors => 'sud0',
+	contact => 'sud0@unitedhack.com',
+	name => "facebook",
+	description => 'This is a simple irssi script that tries to collect functions for using Facebook without Graph API.',
+	license => "Public Domain",
+	url => "http://github.com/mafiasud0/Facebook.pl/tree/master/irssi",
+	changed => "2012-11-07",
+	changes => "See ChangeLog",
+);
+
+Irssi::settings_add_bool("misc", "facebook_autologin", 0);
+Irssi::settings_add_str("misc", "facebook_user", '');
+Irssi::settings_add_str("misc", "facebook_pass", '');
+
+my $autologin = Irssi::settings_get_bool("facebook_autologin");
+my $user = Irssi::settings_get_str("facebook_user");
+my $password = Irssi::settings_get_str("facebook_pass");
+
+# Facebook.pl
 # Cookies
 my $cookies;
 
@@ -231,7 +245,9 @@ sub fbwall {
 				fbclose();
 				chop $@;
 				die "$@\n";
-			}
+			}Irssi::settings_add_bool("misc", "facebook_autologin", 0);
+Irssi::settings_add_str("misc", "facebook_user", '');
+Irssi::settings_add_str("misc", "facebook_pass", '');
 		}
 		if ($datos =~ /errorSummary/) {
 			die "Failed to publish message\n";
@@ -241,5 +257,55 @@ sub fbwall {
 	else {
 		die "Cookies/message unspecified\n";
 	}
+}
+# Facebook.pl EOF
+
+sub login {
+	$user = Irssi::settings_get_str("facebook_user");
+	$password = Irssi::settings_get_str("facebook_pass");
+	if (defined($user) && defined($password) && $user ne "" && $password ne "") {
+		# fblogin
+		unless (eval {fblogin("$user", "$password");}) {
+			chop $@;
+			Irssi::print("Facebook.pl -- Error: $@.");
+		}
+		else {
+			Irssi::print("Facebook.pl -- Logged in.");
+		}
+	}
+	else {
+		Irssi::print("Facebook.pl -- Username/password unspecified. Please see: /set facebook_");
+	}
+}
+
+sub wall {
+	my ($msg, $server, $witem) = @_;
+	if (defined($msg) && $msg ne "") {
+		# Wall post example
+		if (fbcheck()) {
+			# Optional: fbwall("Hello world!", "FriendID");
+			unless (eval {fbwall("$msg");}) {
+				Irssi::print("Facebook.pl -- Error: $@.");
+			}
+			else {
+				Irssi::print("Facebook.pl -- Message sent.");
+			}
+		}
+		else {
+			Irssi::print("Facebook.pl -- Not logged. Log in using: /fblogin");
+		}
+	}
+	else {
+		Irssi::print("Facebook.pl -- Usage: /fbwall [message]");
+	}
+}
+
+Irssi::command_bind("fblogin", "login");
+Irssi::command_bind("fbwall", "wall");
+
+Irssi::print("Facebook.pl -- Configuration: /set facebook_");
+
+if ($autologin == 1) {
+	login();
 }
 #EOF
