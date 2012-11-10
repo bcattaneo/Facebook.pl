@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 #
-# Facebook.pl (1.20)
+# Facebook.pl (1.21)
 #
 # Description:
 # This is a simple perl script that
@@ -33,6 +33,7 @@ my $xhpc_composerid;
 my $c_user;
 
 # http
+my $agent = "Mozilla/5.0 (Windows NT 5.1; rv:16.0) Gecko/20100101 Firefox/16.0"; # Firefox
 my $EOL = "\015\012";
 my $BLANK = $EOL x 2;
 
@@ -68,7 +69,7 @@ sub fbget {
 			$sock->autoflush(1);
 			print $sock "GET $url HTTP/1.1" . $EOL;
 			print $sock "Host: www.facebook.com" . $EOL;
-			print $sock "User-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1b3pre) Gecko/20081130 Minefield/3.1b3pre" . $EOL;
+			print $sock "User-Agent: $agent" . $EOL;
 			print $sock "Accept: text/html,application/xhtml+xml,application/xml,application/ecmascript,text/javascript,text/jscript;q=0.9,*/*;q=0.8" . $EOL;
 			print $sock "Accept-Language: en-us,en;q=0.5" . $EOL;
 			print $sock "Accept-Encoding: deflate" . $EOL;
@@ -114,7 +115,7 @@ sub fbpost {
 		$sock->autoflush(1);
 		print $sock "POST $url HTTP/1.1" . $EOL;
 		print $sock "Host: www.facebook.com" . $EOL;
-		print $sock "User-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1b3pre) Gecko/20081130 Minefield/3.1b3pre" . $EOL;
+		print $sock "User-Agent: $agent" . $EOL;
 		print $sock "Content-Length: ".$cuerpo =~ s/(.)/$1/sg."" . $EOL;
 		print $sock "Content-Type: application/x-www-form-urlencoded" . $EOL;
 		if ($cookie ne "") {

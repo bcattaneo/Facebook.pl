@@ -7,6 +7,7 @@
 #	/SET facebook_autologin [on/off]
 #	/SET facebook_user [email/username]
 #	/SET facebook_pass [password]
+#	/SET facebook_agent [custom User-Agent] (default is Firefox)
 # Notes:
 #	"<br>", "\n", and "%0A" are line breaks
 #	Some options like "-msg" needs quotes for using spaces
@@ -22,7 +23,7 @@ use Getopt::Long;
 use vars qw($VERSION %IRSSI);
 
 use Irssi;
-$VERSION = "1.20";
+$VERSION = "1.21";
 %IRSSI = (
 	authors => 'sud0',
 	contact => 'sud0@unitedhack.com',
@@ -49,10 +50,12 @@ Irssi::theme_register([
 Irssi::settings_add_bool("misc", "facebook_autologin", 0);
 Irssi::settings_add_str("misc", "facebook_user", '');
 Irssi::settings_add_str("misc", "facebook_pass", '');
+Irssi::settings_add_str("misc", "facebook_agent", 'Mozilla/5.0 (Windows NT 5.1; rv:16.0) Gecko/20100101 Firefox/16.0');
 
 my $autologin = Irssi::settings_get_bool("facebook_autologin");
 my $user = Irssi::settings_get_str("facebook_user");
 my $password = Irssi::settings_get_str("facebook_pass");
+my $agent = Irssi::settings_get_str("facebook_agent");
 
 # Facebook.pl
 # Cookies
@@ -100,7 +103,7 @@ sub fbget {
 			$sock->autoflush(1);
 			print $sock "GET $url HTTP/1.1" . $EOL;
 			print $sock "Host: www.facebook.com" . $EOL;
-			print $sock "User-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1b3pre) Gecko/20081130 Minefield/3.1b3pre" . $EOL;
+			print $sock "User-Agent: $agent" . $EOL;
 			print $sock "Accept: text/html,application/xhtml+xml,application/xml,application/ecmascript,text/javascript,text/jscript;q=0.9,*/*;q=0.8" . $EOL;
 			print $sock "Accept-Language: en-us,en;q=0.5" . $EOL;
 			print $sock "Accept-Encoding: deflate" . $EOL;
@@ -146,7 +149,7 @@ sub fbpost {
 		$sock->autoflush(1);
 		print $sock "POST $url HTTP/1.1" . $EOL;
 		print $sock "Host: www.facebook.com" . $EOL;
-		print $sock "User-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1b3pre) Gecko/20081130 Minefield/3.1b3pre" . $EOL;
+		print $sock "User-Agent: $agent" . $EOL;
 		print $sock "Content-Length: ".$cuerpo =~ s/(.)/$1/sg."" . $EOL;
 		print $sock "Content-Type: application/x-www-form-urlencoded" . $EOL;
 		if ($cookie ne "") {
