@@ -57,7 +57,6 @@ Irssi::settings_add_str("misc", "facebook_agent", 'Mozilla/5.0 (Windows NT 5.1; 
 my $autologin = Irssi::settings_get_bool("facebook_autologin");
 my $user = Irssi::settings_get_str("facebook_user");
 my $password = Irssi::settings_get_str("facebook_pass");
-my $agent = Irssi::settings_get_str("facebook_agent");
 
 # Facebook.pl
 # Cookies
@@ -70,6 +69,7 @@ my $xhpc_composerid;
 my $c_user;
 
 # http
+my $agent = Irssi::settings_get_str("facebook_agent");
 my $EOL = "\015\012";
 my $BLANK = $EOL x 2;
 
