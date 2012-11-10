@@ -263,9 +263,7 @@ sub fbwall {
 				fbclose();
 				chop $@;
 				die "$@.\n";
-			}Irssi::settings_add_bool("misc", "facebook_autologin", 0);
-Irssi::settings_add_str("misc", "facebook_user", '');
-Irssi::settings_add_str("misc", "facebook_pass", '');
+			}
 		}
 		if ($datos =~ /errorSummary/) {
 			die "Failed to publish message.\n";
