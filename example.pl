@@ -18,7 +18,7 @@ else {
 # Login check
 if (fbcheck()) {
 	# Wall post example
-	# Usage: fbwall("Hello world!", "FriendID");
+	# Usage: fbwall("Hello world!", "FriendID (optional)");
 	unless (eval {fbwall("Hello world!");}) {
 		chop $@;
 		print "Error: $@\n";
