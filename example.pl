@@ -3,22 +3,40 @@
 use strict;
 require "./facebook.pl";
 
-my $user = "MyFacebookEMAIL"; # you can use alias too.
-my $password = "MyPassword";
+my $user = 'MyFacebookEMAIL'; # you can use alias too.
+my $password = 'MyPassword';
 
 # Login example
 unless (eval {fblogin("$user", "$password");}) {
-	print "Error: $@";
+	chop $@;
+	print "Error: $@\n";
+}
+else {
+	print "Logged in.\n";
 }
 
-# Wall post example
+# Login check
 if (fbcheck()) {
-	# Optional: fbwall("Hello world!", "FriendID");
+	# Wall post example
+	# Usage: fbwall("Hello world!", "FriendID");
 	unless (eval {fbwall("Hello world!");}) {
-		print "Error: $@";
+		chop $@;
+		print "Error: $@\n";
+	}
+	else {
+		print "Message sent.\n";
+	}
+	# Composer wall post example
+	# Usage: fbcomposer("Page title", "http://www.MyCoolWebPage.com", "Description text", "http://www.MyCoolWebPage.com/logo.jpg (optional)", "My post message (optional)", "FriendID (optional)", "http://www.MyCoolWebPage.com/favicon.ico (optional)");
+	unless (eval {fbcomposer("Page title", "http://www.MyCoolWebPage.com", "Description text", "http://www.MyCoolWebPage.com/logo.jpg", "My post message");}) {
+		chop $@;
+		print "Error: $@\n";
+	}
+	else {
+		print "Composer message sent.\n";
 	}
 }
 else {
-	die "Not logged in\n";
+	die "Not logged in.\n";
 }
 #EOF
