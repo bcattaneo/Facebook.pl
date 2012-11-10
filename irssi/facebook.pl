@@ -8,13 +8,14 @@
 #	/SET facebook_user [email/username]
 #	/SET facebook_pass [password]
 #	/SET facebook_agent [custom User-Agent] (default is Firefox)
-# Notes:
-#	"<br>", "\n", and "%0A" are line breaks
-#	Some options like "-msg" needs quotes for using spaces
 # Examples:
 #	/FBWALL -msg "Hey dude, I am using Irssi right now :D" -friend 100004386815625
 #	/FBCOMPOSER -title "Irssi, The client of the future" -url http://www.irssi.org -desc "Irssi official Website" -img http://www.irssi.org/images/irssitop.png -msg "Install Irssi :D"
-#
+# Notes (please read):
+#	You will have to disable (probably) restricted location on Facebook.
+#	This script "uses" Firefox by default to connect to Facebook (/set facebook_agent).
+#	"<br>", "\n", and "%0A" are line breaks.
+#	Some options like "-msg" needs quotes for using spaces.
 
 use strict;
 use IO::Socket;
@@ -36,7 +37,7 @@ $VERSION = "1.21";
 );
 
 Irssi::theme_register([
-	'facebook_inicio', '%B::%n %_Facebook.pl%_ -- Configuration: %_/set facebook%_',
+	'facebook_inicio', '%B::%n %_Facebook.pl%_ -- Please see: %_/fbhelp%_',
 	'facebook_fbwall', '%B::%n %_Facebook.pl%_ -- Usage: %_/fbwall -msg "My message" -friend FriendID (optional)%_',
 	'facebook_fbcomposer', '%B::%n %_Facebook.pl%_ -- Usage: %_/fbwall -title "Web title" -url http://mycoolweb.com -desc "My cool description" -img http://mycoolweb.com/image.jpg (optional) -msg "My message" (optional) -friend FriendID (optional) -favicon http://mycoolweb.com/favicon.ico (optional)%_',
 	'facebook_fblogin', '%B::%n %_Facebook.pl%_ -- Not logged in. Log in using: %_/fblogin%_',
@@ -45,6 +46,7 @@ Irssi::theme_register([
 	'facebook_msgerror', '%B::%n %_Facebook.pl%_ -- %RError:%n $0',
 	'facebook_logged', '%B::%n %_Facebook.pl%_ -- Logged in.',
 	'facebook_user', '%B::%n %_Facebook.pl%_ -- Username/password unspecified. Please see: %_/set facebook%_',
+	'facebook_help', '%B::%n %_Facebook.pl%_ -- Configuration: %_/set facebook%_. Commands: %_/fblogin%_, %_/fbwall%_, %_/fbcomposer%_',
 ]);
 
 Irssi::settings_add_bool("misc", "facebook_autologin", 0);
@@ -399,6 +401,7 @@ sub login {
 		Irssi::printformat(MSGLEVEL_CLIENTCRAP, 'facebook_user');
 	}
 }
+
 sub wall {
 	my ($msg, $server, $witem) = @_;
 	my ($fbmsg, $fbfriend);
@@ -464,9 +467,14 @@ sub composer {
 	}
 }
 
+sub help {
+	Irssi::printformat(MSGLEVEL_CLIENTCRAP, 'facebook_help');
+}
+
 Irssi::command_bind("fblogin", "login");
 Irssi::command_bind("fbwall", "wall");
 Irssi::command_bind("fbcomposer", "composer");
+Irssi::command_bind("fbhelp", "help");
 
 Irssi::printformat(MSGLEVEL_CLIENTCRAP, 'facebook_inicio');
 
