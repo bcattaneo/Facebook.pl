@@ -2,7 +2,7 @@
 # Usage:
 #	/FBLOGIN
 #	/FBWALL [-msg "<message>"] [-friend <FriendID> (optional)]
-#	/FBCOMPOSER [-title "<title>"] [-url <http://myweb.com>] [-desc "<My description>"] [-img <http://myweb.com/image.jpg> (optional)] [-msg "<message>" (optional)] [-friend <FriendID> (optional)] [-fav <http://myweb.com/favicon.ico> (optional)]
+#	/FBCOMPOSER [-title "<title>"] [-url <http://myweb.com>] [-desc "<My description>"] [-img <http://myweb.com/image.jpg> (optional)] [-msg "<message>" (optional)] [-friend <FriendID> (optional)] [-favicon <http://myweb.com/favicon.ico> (optional)]
 # Settings:
 #	/SET facebook_autologin [on/off]
 #	/SET facebook_user [email/username]
