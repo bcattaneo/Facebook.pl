@@ -57,6 +57,8 @@ sub fbcheck {
 sub fbget {
 	my $url = shift;
 	my $cookie = shift;
+	my $host = shift;
+	my $alive = shift;
 	if (defined($url) && defined($cookie) && $url ne "") {
 		# Loop
 		while (1) {
@@ -68,7 +70,12 @@ sub fbget {
 			}
 			$sock->autoflush(1);
 			print $sock "GET $url HTTP/1.1" . $EOL;
-			print $sock "Host: www.facebook.com" . $EOL;
+			if (defined($host) && $host ne "") {
+				print $sock "Host: $host" . $EOL;
+			}
+			else {
+				print $sock "Host: www.facebook.com" . $EOL;
+			}
 			print $sock "User-Agent: $agent" . $EOL;
 			print $sock "Accept: text/html,application/xhtml+xml,application/xml,application/ecmascript,text/javascript,text/jscript;q=0.9,*/*;q=0.8" . $EOL;
 			print $sock "Accept-Language: en-us,en;q=0.5" . $EOL;
@@ -77,7 +84,12 @@ sub fbget {
 			if ($cookie ne "") {
 				print $sock "Cookie: $cookie" . $EOL;
 			}
-			print $sock "Connection: close" . $BLANK;
+			if (defined($alive) && $alive == 1) {
+				print $sock "Connection: keep-alive" . $BLANK;
+			}
+			else {
+				print $sock "Connection: close" . $BLANK;
+			}
 			while (<$sock>) {
 				$datos = "$datos$_";
 			}
@@ -103,6 +115,8 @@ sub fbpost {
 	my $url = shift;
 	my $cookie = shift;
 	my $cuerpo = shift;
+	my $host = shift;
+	my $alive = shift;
 	if (defined($url) && defined($cookie) && defined($cuerpo) && $url ne "" && $cuerpo ne "") {
 		# HTTP POST
 		my $datos;
@@ -114,14 +128,24 @@ sub fbpost {
 		}
 		$sock->autoflush(1);
 		print $sock "POST $url HTTP/1.1" . $EOL;
-		print $sock "Host: www.facebook.com" . $EOL;
+		if (defined($host) && $host ne "") {
+			print $sock "Host: $host" . $EOL;
+		}
+		else {
+			print $sock "Host: www.facebook.com" . $EOL;
+		}
 		print $sock "User-Agent: $agent" . $EOL;
 		print $sock "Content-Length: ".$cuerpo =~ s/(.)/$1/sg."" . $EOL;
 		print $sock "Content-Type: application/x-www-form-urlencoded" . $EOL;
 		if ($cookie ne "") {
 			print $sock "Cookie: $cookie" . $EOL;
 		}
-		print $sock "Connection: close" . $BLANK;
+		if (defined($alive) && $alive == 1) {
+			print $sock "Connection: keep-alive" . $BLANK;
+		}
+		else {
+			print $sock "Connection: close" . $BLANK;
+		}
 		print $sock "$cuerpo" . $EOL;
 		while (<$sock>) {
 			$datos = "$datos$_";
